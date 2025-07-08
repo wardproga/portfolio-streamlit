@@ -21,6 +21,22 @@ st.markdown("""
 - Git & GitHub 🌐  
 - التفكير التحليلي والمنطقي 🧠
 """)
+import streamlit as st
+import base64
+
+# عرض أزرار تحميل السيرة الذاتية
+st.subheader("📄 السيرة الذاتية")
+
+def download_button(file_path, file_label):
+    with open(file_path, "rb") as f:
+        data = f.read()
+    b64 = base64.b64encode(data).decode()
+    href = f'<a href="data:application/octet-stream;base64,{b64}" download="{file_path}">⬇️ تحميل {file_label}</a>'
+    st.markdown(href, unsafe_allow_html=True)
+
+download_button("CV_Moad_Nimrat.pdf", "السيرة الذاتية PDF")
+download_button("CV_Moad_Nimrat.docx", "السيرة الذاتية Word")
+download_button("CV_Moad_Nimrat.html", "السيرة الذاتية HTML")
 
 # المشاريع
 st.header("📂 المشاريع")
