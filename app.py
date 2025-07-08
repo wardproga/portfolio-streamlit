@@ -12,7 +12,14 @@ st.write("""
 أسعى لاستخدام البرمجة لإيجاد حلول ذكية للمشكلات.
 """)
 
+
 # المهارات
+# روابط مهمة
+st.markdown("""
+### 🌐 روابط خارجية
+- [🔗 زيارة حسابي على GitHub](https://github.com/wardproga)
+- [📄 عرض السيرة الذاتية (PDF)](https://github.com/wardproga/portfolio-streamlit/raw/main/CV_Moad_Nimrat.pdf)
+""")
 st.header("المهارات")
 st.markdown("""
 - Python 🐍  
@@ -59,3 +66,14 @@ with open("cv.pdf", "rb") as file:
         file_name="cv.pdf",
         mime="application/pdf"
     )
+    st.header("📬 تواصل معي")
+contact_form = """
+<form action="https://formsubmit.co/wardproga@gmail.com" method="POST">
+    <input type="text" name="name" placeholder="الاسم الكامل" required style="width:100%; padding:8px; margin-bottom:8px">
+    <input type="email" name="email" placeholder="البريد الإلكتروني" required style="width:100%; padding:8px; margin-bottom:8px">
+    <textarea name="message" placeholder="رسالتك" required style="width:100%; padding:8px; height:100px;"></textarea>
+    <button type="submit" style="margin-top:10px; padding:10px 20px; background:#4CAF50; color:white; border:none;">إرسال</button>
+</form>
+"""
+
+st.markdown(contact_form, unsafe_allow_html=True)
