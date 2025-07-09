@@ -46,7 +46,16 @@ if cv_path.is_file():
     )
 else:
     st.error("⚠️ لم يتم العثور على ملف السيرة الذاتية داخل المشروع.")
+# تحميل السيرة الذاتية (Word)
+with open("CV_Moad_Nimrat.docx", "rb") as word_file:
+    word_byte = word_file.read()
 
+st.download_button(
+    label="📄 تحميل السيرة الذاتية (Word)",
+    data=word_byte,
+    file_name="CV_Moad_Nimrat.docx",
+    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+)
 # ----------- روابط مهمة -----------
 st.header("🌍 روابط مهمة")
 st.markdown("[🔗 زيارة حساب GitHub](https://github.com/wardproga)")
