@@ -1,4 +1,41 @@
 import streamlit as st
+from PIL import Image
+
+st.set_page_config(page_title="ملف أعمال معاذ النمرات", page_icon="💼", layout="wide")
+
+# --- تنسيق عام ---
+st.markdown(
+    """
+    <style>
+        .main {
+            background-color: #f8f9fa;
+            font-family: 'Cairo', sans-serif;
+        }
+        h1, h2, h3 {
+            color: #003566;
+        }
+        .stButton>button {
+            background-color: #198754;
+            color: white;
+            border-radius: 8px;
+            padding: 10px 20px;
+        }
+        .stDownloadButton>button {
+            background-color: #0d6efd;
+            color: white;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# --- العنوان ---
+st.title("👋 أهلاً بك في ملف أعمالي")
+st.markdown("مرحبًا، أنا **معاذ النمرات** — مطور برمجيات ومحلل بيانات من الأردن، بخبرة أكثر من 14 سنة في التعليم والتقنية.")
+
+st.divider()
+
+import streamlit as st
 
 # إعدادات الصفحة
 st.set_page_config(page_title="ملف أعمال معاذ النمرات", page_icon="💼", layout="wide")
