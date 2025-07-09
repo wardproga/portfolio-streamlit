@@ -63,7 +63,27 @@ skills = [
     "🧠 JavaScript / HTML / CSS"
 ]
 st.write("\n".join(f"- {skill}" for skill in skills))
+st.header("📂 مشاريعي")
 
+col1, col2 = st.columns(2)
+
+with col1:
+    st.subheader("🧠 نظام الحوسبة التعليمية - OpenEMIS")
+    st.write("""
+    نظام إلكتروني متكامل لإدارة معلومات التعليم، يساعد المدارس على جمع وتحليل البيانات التعليمية.
+    """)
+    st.markdown("- **التقنيات**: PHP, Laravel, MySQL")
+    st.markdown("[🔗 رابط المشروع](https://openemis.org/)")
+
+with col2:
+    st.subheader("🌐 ملف الأعمال - Portfolio Streamlit")
+    st.write("""
+    تطبيق تفاعلي باستخدام Streamlit لعرض سيرتي الذاتية ومشاريعي بشكل أنيق وسهل الاستخدام.
+    """)
+    st.markdown("- **التقنيات**: Python, Streamlit, GitHub")
+    st.markdown("[🔗 رابط مباشر للموقع](https://portfolio-app-mubu7hqoxrgwdadhnnrbau.streamlit.app)")
+
+st.divider()
 # -------- تحميل السيرة الذاتية ----------
 st.header("📄 السيرة الذاتية")
 with open("CV_Moad_Nimrat.pdf", "rb") as pdf_file:
