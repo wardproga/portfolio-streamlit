@@ -1,5 +1,32 @@
 import streamlit as st
+# إضافة اختيار الوضع الليلي أو النهاري
+mode = st.selectbox("اختر المظهر:", ["🌞 الوضع النهاري", "🌙 الوضع الليلي"])
 
+# CSS لتغيير الألوان بناءً على الوضع المختار
+if mode == "🌞 الوضع النهاري":
+    st.markdown(
+        """
+        <style>
+        body {
+            background-color: #ffffff;
+            color: #000000;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+else:
+    st.markdown(
+        """
+        <style>
+        body {
+            background-color: #0e1117;
+            color: #ffffff;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 # -------- إعداد الصفحة --------
 st.set_page_config(page_title="ملف أعمال معاذ", layout="centered")
 
