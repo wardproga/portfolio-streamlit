@@ -5,3 +5,4 @@ folium
 streamlit-folium
 streamlit-calendar
 requests
+streamlit-option-menu
