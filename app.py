@@ -6,6 +6,7 @@ import calendar
 import pandas as pd
 import requests
 import os
+from streamlit_calendar import calendar
 
 # إعداد الصفحة
 st.set_page_config(page_title="ملف أعمال معاذ النمرات", page_icon="💼", layout="wide")
@@ -15,14 +16,13 @@ counter_file = "counter.txt"
 if not os.path.exists(counter_file):
     with open(counter_file, "w") as f:
         f.write("0")
-
 with open(counter_file, "r") as f:
     visits = int(f.read())
 visits += 1
 with open(counter_file, "w") as f:
     f.write(str(visits))
 
-# إدراج CSS
+# CSS مخصص
 st.markdown("""
     <style>
     .fade-in {
@@ -32,12 +32,32 @@ st.markdown("""
         0% {opacity:0; transform: translateY(20px);}
         100% {opacity:1; transform: translateY(0);}
     }
-    .card { background-color: #f9f9f9; border-radius: 10px; padding: 20px; margin: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-    .card:hover { box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
-    .timeline { border-left: 4px solid indigo; margin-left: 20px; padding-left: 20px; }
-    .timeline-event { margin-bottom: 30px; }
-    .timeline-event h4 { margin: 0; color: indigo; }
-    .timeline-event p { margin: 5px 0 0 0; color: #555; }
+    .card {
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .card:hover {
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+    .timeline {
+        border-left: 4px solid indigo;
+        margin-left: 20px;
+        padding-left: 20px;
+    }
+    .timeline-event {
+        margin-bottom: 30px;
+    }
+    .timeline-event h4 {
+        margin: 0;
+        color: indigo;
+    }
+    .timeline-event p {
+        margin: 5px 0 0 0;
+        color: #555;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -102,86 +122,111 @@ skills = {
 
 st.sidebar.markdown(f"**{texts[lang]['visits']} {visits}**")
 
-# القسم الأول - الترحيب + فيديو
+# من أنا؟
 if section == texts[lang]['sections'][0]:
     st.markdown(f"<div class='fade-in'><h2 style='text-align: center;'>{texts[lang]['welcome']}</h2></div>", unsafe_allow_html=True)
     st.video("https://www.youtube.com/watch?v=VDoqL9pChrk")
-    st.write("👆 فيديو تعريفي بسيط (يمكن استبداله لاحقًا برابط خاص بك)")
+    st.write("👆 فيديو تعريفي بسيط")
 
-# القسم الثاني - المهارات
-if section == texts[lang]["sections"][1]:
-    st.markdown(f"<div class='fade-in'><h2 style='text-align: center;'>المهارات</h2></div>", unsafe_allow_html=True)
-    for skill, percentage in skills.items():
-        st.progress(percentage, text=f"{skill}: {percentage}%")
+# السيرة الذاتية
+elif section == texts[lang]['sections'][3]:
+    st.download_button("⬇️ تحميل السيرة الذاتية PDF", "سيرتي الذاتية".encode(), file_name="CV.pdf")
+    st.download_button("⬇️ تحميل السيرة الذاتية Word", "سيرتي الذاتية".encode(), file_name="CV.docx")
 
-# القسم الثالث - الخبرات
-if section == texts[lang]["sections"][2]:
-    st.markdown(f"<div class='fade-in'><h2 style='text-align: center;'>الخبرات</h2></div>", unsafe_allow_html=True)
-    st.write("خبرة في البرمجة وتطوير الأنظمة وتحليل البيانات.")
+# معرض المشاريع
+elif section == texts[lang]['sections'][4]:
+    st.markdown("""
+        <div class='fade-in'>
+            <h2 style='text-align: center;'>🎯 معرض المشاريع</h2>
+            <div style='display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;'>
 
-# القسم الرابع - السيرة الذاتية
-if section == texts[lang]["sections"][3]:
-    st.markdown(f"<div class='fade-in'><h2 style='text-align: center;'>السيرة الذاتية</h2></div>", unsafe_allow_html=True)
-    st.download_button(
-        label="تحميل السيرة الذاتية (PDF)",
-        data=open("CV.pdf", "rb").read(),
-        file_name="CV.pdf",
-        mime="application/pdf"
-    )
+                <div class='card' style='width: 300px;'>
+                    <h4>📘 نظام Open EMIS</h4>
+                    <p>نظام حوسبة متكامل لإدارة التعليم المدرسي.</p>
+                    <a href='https://moadau.streamlit.app' target='_blank'>🔗 معاينة المشروع</a>
+                </div>
 
-# القسم الخامس - معرض المشاريع
-if section == texts[lang]["sections"][4]:
-    st.markdown(f"<div class='fade-in'><h2 style='text-align: center;'>معرض المشاريع</h2></div>", unsafe_allow_html=True)
-    st.write("ستعرض مشاريعك هنا مع روابط وتحميلات!")
+                <div class='card' style='width: 300px;'>
+                    <h4>📊 تحليل بيانات المبيعات</h4>
+                    <p>لوحة بيانات تفاعلية باستخدام Python وPandas.</p>
+                    <a href='https://github.com/wardproga/sales' target='_blank'>🔗 زيارة GitHub</a>
+                </div>
 
-# القسم السادس - تقييم المهارات
-if section == texts[lang]["sections"][5]:
-    st.markdown(f"<div class='fade-in'><h2 style='text-align: center;'>تقييم المهارات</h2></div>", unsafe_allow_html=True)
-    st.write("تقييم المهارات باستخدام الرسوم البيانية.")
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
 
-# القسم السابع - تقييم تفاعلي
-if section == texts[lang]["sections"][6]:
-    st.markdown(f"<div class='fade-in'><h2 style='text-align: center;'>تقييم تفاعلي</h2></div>", unsafe_allow_html=True)
-    st.write("استبيان لتقييم تفاعلي مع الزوار.")
+# تقويم
+elif section == texts[lang]['sections'][8]:
+    st.markdown(f"<div class='fade-in'><h2 style='text-align: center;'>📅 تقويم المهام</h2></div>", unsafe_allow_html=True)
+    events = [
+        {"title": "تطوير مشروع", "start": "2025-07-15T10:00:00", "end": "2025-07-15T12:00:00"},
+        {"title": "ورشة تحليل بيانات", "start": "2025-07-18T14:00:00", "end": "2025-07-18T16:00:00"}
+    ]
+    calendar_options = {"initialView": "timeGridWeek", "editable": False, "selectable": False}
+    calendar(events=events, options=calendar_options)
 
-# القسم الثامن - تحميل المشروع
-if section == texts[lang]["sections"][7]:
-    st.markdown(f"<div class='fade-in'><h2 style='text-align: center;'>📦 تحميل المشروع</h2></div>", unsafe_allow_html=True)
-    st.download_button(
-        label="تحميل المشروع",
-        data=open("project.zip", "rb").read(),
-        file_name="project.zip",
-        mime="application/zip"
-    )
+# خريطة العمل
+elif section == texts[lang]['sections'][9]:
+    st.markdown(f"<div class='fade-in'><h2 style='text-align: center;'>🗺️ مواقع العمل</h2></div>", unsafe_allow_html=True)
+    map_data = pd.DataFrame({
+        'lat': [31.9539, 32.3809],
+        'lon': [35.9106, 36.2252],
+        'place': ['وزارة التربية والتعليم', 'جامعة آل البيت']
+    })
+    st.map(map_data, zoom=7)
+    for i in range(len(map_data)):
+        st.markdown(f"- 📍 {map_data.place[i]}")
 
-# القسم التاسع - التقويم
-if section == texts[lang]["sections"][8]:
-    st.markdown(f"<div class='fade-in'><h2 style='text-align: center;'>📅 تقويم</h2></div>", unsafe_allow_html=True)
-    st.write("هنا يمكنك إضافة تقويمك الخاص!")
+# الخط الزمني
+elif section == texts[lang]['sections'][10]:
+    st.markdown("<div class='fade-in'><h2 style='text-align: center;'>📌 الخط الزمني المهني</h2></div>", unsafe_allow_html=True)
+    st.markdown("""
+    <div class='timeline'>
+        <div class='timeline-event'>
+            <h4>🎓 2010 - التخرج من جامعة آل البيت</h4>
+            <p>بكالوريوس علم الحاسوب</p>
+        </div>
+        <div class='timeline-event'>
+            <h4>🏫 2011–2024 - العمل في التعليم</h4>
+            <p>أكثر من 14 سنة خبرة في التعليم المدرسي</p>
+        </div>
+        <div class='timeline-event'>
+            <h4>📊 2023 - التخصص في تحليل البيانات</h4>
+        </div>
+        <div class='timeline-event'>
+            <h4>🖥️ 2024 - تطوير نظام Open EMIS</h4>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-# القسم العاشر - خريطة العمل
-if section == texts[lang]["sections"][9]:
-    st.markdown(f"<div class='fade-in'><h2 style='text-align: center;'>🗺️ خريطة العمل</h2></div>", unsafe_allow_html=True)
-    st.write("إضافة خريطة تفاعلية هنا.")
-
-# القسم الحادي عشر - الخط الزمني
-if section == texts[lang]["sections"][10]:
-    st.markdown(f"<div class='fade-in'><h2 style='text-align: center;'>الخط الزمني</h2></div>", unsafe_allow_html=True)
-    st.write("عرض الخط الزمني لتطوير مشاريعك.")
-
-# القسم الثاني عشر - تواصل معي
-if section == texts[lang]["sections"][11]:
-    st.markdown(f"<div class='fade-in'><h2 style='text-align: center;'>📨 تواصل معي</h2></div>", unsafe_allow_html=True)
+# نموذج تواصل
+elif section == texts[lang]['sections'][11]:
+    st.markdown(f"<div class='fade-in'><h2 style='text-align: center;'>{texts[lang]['contact_title']}</h2></div>", unsafe_allow_html=True)
     with st.form(key='contact_form'):
         name = st.text_input(texts[lang]['name'])
         email = st.text_input(texts[lang]['email'])
         message = st.text_area(texts[lang]['message'])
         submit_button = st.form_submit_button(texts[lang]['send'])
         if submit_button:
-            st.success("تم إرسال رسالتك بنجاح!")
-            
-# القسم الثالث عشر - حجز موعد
-if section == texts[lang]["sections"][12]:
+            if name and email and message:
+                st.success("✅ تم إرسال رسالتك بنجاح!")
+            else:
+                st.warning("⚠️ يرجى ملء جميع الحقول.")
+
+# تقييم تفاعلي
+elif section == texts[lang]['sections'][6]:
+    st.markdown(f"<div class='fade-in'><h2 style='text-align: center;'>📈 تقييمك يهمني</h2></div>", unsafe_allow_html=True)
+    rating = st.slider("🌟 اختر تقييمك (1 إلى 10)", 1, 10, 5)
+    if rating <= 3:
+        st.warning("😕 نعتذر إذا لم تكن تجربتك جيدة. يسعدنا معرفة رأيك.")
+    elif rating <= 7:
+        st.info("🙂 شكرًا على تقييمك! سنواصل التحسين.")
+    else:
+        st.success("🤩 سعيد أن تجربتك كانت ممتازة!")
+
+# حجز موعد
+elif section == texts[lang]['sections'][12]:
     st.markdown(f"<div class='fade-in'><h2 style='text-align: center;'>{texts[lang]['booking']}</h2></div>", unsafe_allow_html=True)
     with st.form(key='appointment_form'):
         name = st.text_input(texts[lang]['name'])
@@ -189,8 +234,7 @@ if section == texts[lang]["sections"][12]:
         date = st.date_input(texts[lang]['date'])
         time = st.time_input(texts[lang]['time'])
         submitted = st.form_submit_button(texts[lang]['book'])
-        if submitted:
-            if name and email:
-                st.success("✅ تم حجز الموعد بنجاح! سيتم التواصل معك قريبًا.")
-            else:
-                st.warning("يرجى ملء جميع الحقول.")
+        if submitted and name and email:
+            st.success("✅ تم حجز الموعد بنجاح!")
+        else:
+            st.warning("يرجى ملء جميع الحقول.")
