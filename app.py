@@ -78,21 +78,28 @@ skills = [
 for skill in skills:
     st.write(f"- {skill}")
 # -------- معرض المشاريع --------
-st.header("🧰 معرض المشاريع")
+st.header("📂 معرض المشاريع")
 
-project_1, project_2 = st.columns(2)
+projects = [
+    {
+        "title": "نظام الحوسبة التعليمية Open EMIS",
+        "description": "نظام إلكتروني لإدارة المعلومات التعليمية يهدف إلى تحسين جمع البيانات وتحليلها.",
+        "link": "https://example.com/open-emis"
+    },
+    {
+        "title": "ملف الأعمال باستخدام Streamlit",
+        "description": "موقع تفاعلي لعرض السيرة الذاتية والمهارات باستخدام Streamlit.",
+        "link": "https://moadau.streamlit.app"
+    },
+    # يمكنك إضافة المزيد هنا...
+]
 
-with project_1:
-    st.subheader("📊 مشروع Open EMIS")
-    st.write("نظام حوسبة تعليمية لتحسين إدارة البيانات المدرسية.")
-    st.markdown("[🔗 زيارة المشروع](https://example.com/open-emis)")
-
-with project_2:
-    st.subheader("💼 ملفي التفاعلي (Streamlit)")
-    st.write("تطبيق ويب تفاعلي يعرض سيرتي الذاتية ومهاراتي.")
-    st.markdown("[🌐 مشاهدة المشروع](https://moadau.streamlit.app)")
-
-st.markdown("---")
+cols = st.columns(2)
+for i, project in enumerate(projects):
+    with cols[i % 2]:
+        st.subheader(project["title"])
+        st.write(project["description"])
+        st.markdown(f"[🔗 زيارة المشروع]({project['link']})")
 # -------- السيرة الذاتية --------
 st.header("📄 السيرة الذاتية")
 
