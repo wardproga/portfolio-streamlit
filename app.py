@@ -63,7 +63,22 @@ skills = [
 ]
 for skill in skills:
     st.write(f"- {skill}")
+# -------- معرض المشاريع --------
+st.header("🧰 معرض المشاريع")
 
+project_1, project_2 = st.columns(2)
+
+with project_1:
+    st.subheader("📊 Open EMIS")
+    st.write("نظام الحوسبة التعليمية الذي يساهم في تحسين إدارة المدارس والبيانات التعليمية.")
+    st.markdown("[🔗 عرض المشروع](https://www.openemis.org/)")
+
+with project_2:
+    st.subheader("💼 ملفي التفاعلي (Streamlit)")
+    st.write("تطبيق تفاعلي يعرض سيرتي الذاتية ومهاراتي باستخدام Streamlit.")
+    st.markdown("[🌐 زيارة التطبيق](https://portfolio-app-mubu7hqoxrgwdadhnnrbau.streamlit.app/)")
+
+st.markdown("---")
 # -------- السيرة الذاتية --------
 st.header("📄 السيرة الذاتية")
 
