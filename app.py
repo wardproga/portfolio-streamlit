@@ -1,12 +1,38 @@
 import streamlit as st
-import os
 import datetime
+import os
 from streamlit_option_menu import option_menu
 
 # إعداد الصفحة
 st.set_page_config(page_title="ملف أعمال معاذ النمرات", page_icon="💼", layout="wide")
 
-# إعداد ملف عداد الزيارات
+# 💡 تحسين عرض الجوال: CSS مخصص للشاشات الصغيرة
+st.markdown("""
+    <style>
+    /* تقليل عرض الشريط الجانبي في الجوال */
+    @media (max-width: 768px) {
+        section[data-testid="stSidebar"] {
+            width: 200px !important;
+            min-width: 200px !important;
+        }
+    }
+    /* تحسين شكل الروابط في الشريط */
+    .css-1d391kg, .css-1v0mbdj, .css-znku1x {
+        font-size: 16px !important;
+        padding: 0.5rem 1rem;
+    }
+    /* تحسين المسافات */
+    .main .block-container {
+        padding-top: 1rem;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# 🔁 اللغة
+lang_toggle = st.sidebar.toggle("🌐 عربي / English", value=True)
+lang = "ar" if lang_toggle else "en"
+
+# 🔢 عداد الزيارات
 counter_file = "counter.txt"
 if not os.path.exists(counter_file):
     with open(counter_file, "w") as f:
@@ -17,143 +43,155 @@ visits += 1
 with open(counter_file, "w") as f:
     f.write(str(visits))
 
-# دعم اللغة
-lang_toggle = st.sidebar.toggle("🌐 عربي / English", value=True)
-lang = "العربية" if lang_toggle else "English"
-
+# 📑 النصوص حسب اللغة
 texts = {
-    "العربية": {
+    "ar": {
+        "menu": "القائمة",
         "sections": ["من أنا؟", "🏅 الشهادات", "📁 المشاريع", "📊 المهارات", "📨 تواصل", "📆 حجز موعد"],
         "welcome": "مرحبًا بك في موقعي الشخصي!",
+        "contact_title": "📨 تواصل معي",
         "name": "الاسم",
         "email": "البريد الإلكتروني",
         "message": "رسالتك",
         "send": "إرسال",
-        "booking": "نموذج حجز موعد",
-        "book": "حجز",
+        "visits": "عدد زيارات الموقع:",
+        "booking": "📆 نموذج حجز موعد",
+        "book": "حجز الموعد",
         "date": "اختر التاريخ",
         "time": "اختر الوقت",
-        "visits": "عدد زيارات الموقع: ",
-        "comments": "💬 تعليقات الزوار",
-        "comment_button": "إرسال",
-        "success_comment": "✅ شكراً لتعليقك!"
+        "comment": "💬 تعليقات الزوار",
+        "last_comments": "آخر التعليقات:"
     },
-    "English": {
-        "sections": ["About", "🏅 Certificates", "📁 Projects", "📊 Skills", "📨 Contact", "📆 Book"],
+    "en": {
+        "menu": "Menu",
+        "sections": ["About Me", "🏅 Certificates", "📁 Projects", "📊 Skills", "📨 Contact", "📆 Book Appointment"],
         "welcome": "Welcome to my personal website!",
+        "contact_title": "📨 Contact Me",
         "name": "Name",
         "email": "Email",
-        "message": "Message",
+        "message": "Your Message",
         "send": "Send",
-        "booking": "Appointment Form",
+        "visits": "Website Visits:",
+        "booking": "📆 Appointment Booking Form",
         "book": "Book",
-        "date": "Select date",
-        "time": "Select time",
-        "visits": "Site visits: ",
-        "comments": "💬 Visitor Comments",
-        "comment_button": "Send",
-        "success_comment": "✅ Thanks for your comment!"
+        "date": "Select Date",
+        "time": "Select Time",
+        "comment": "💬 Visitor Comments",
+        "last_comments": "Latest Comments:"
     }
 }
 
-# شريط جانبي باستخدام Option Menu
+T = texts[lang]
+
+# 📌 القائمة الجانبية
 with st.sidebar:
-    choice = option_menu(
-        menu_title="القائمة" if lang == "العربية" else "Menu",
-        options=texts[lang]["sections"],
+    selected = option_menu(
+        T["menu"],
+        options=T["sections"],
         icons=["person", "award", "folder", "bar-chart", "envelope", "calendar"],
         menu_icon="cast",
         default_index=0,
-        orientation="vertical"
+        styles={
+            "container": {"padding": "5px", "background-color": "#f8f9fa"},
+            "icon": {"color": "#6c757d", "font-size": "20px"},
+            "nav-link": {"font-size": "16px", "text-align": "right", "margin": "0px"},
+            "nav-link-selected": {"background-color": "#FF4B4B", "color": "white"},
+        }
     )
-    st.markdown(f"**{texts[lang]['visits']} {visits}**")
+    st.markdown(f"**{T['visits']} {visits}**")
 
-# من أنا؟
-if choice == texts[lang]["sections"][0]:
-    st.title(texts[lang]["welcome"])
-    st.video("https://www.youtube.com/watch?v=VDoqL9pChrk")
+# 🎉 إشعار ترحيبي
+if "first_visit" not in st.session_state:
+    st.session_state.first_visit = True
+if st.session_state.first_visit:
+    st.toast("👋 " + T["welcome"], icon="💼")
+    st.session_state.first_visit = False
+
+# 🧑‍💻 من أنا؟
+if selected == T["sections"][0]:
+    st.header(T["welcome"])
     start_date = datetime.date(2010, 9, 1)
-    delta = datetime.date.today() - start_date
-    years, rem = divmod(delta.days, 365)
-    months, days = divmod(rem, 30)
-    st.success(f"📅 لديك خبرة {years} سنة و {months} شهر و {days} يوم" if lang == "العربية" else f"📅 You have {years} years, {months} months, and {days} days of experience.")
+    today = datetime.date.today()
+    delta = today - start_date
+    years = delta.days // 365
+    months = (delta.days % 365) // 30
+    days = (delta.days % 365) % 30
+    st.success(f"📅 لديك خبرة {years} سنة و {months} شهر و {days} يوم" if lang == "ar"
+               else f"📅 You have {years} years, {months} months, and {days} days of experience.")
+    st.video("https://www.youtube.com/watch?v=VDoqL9pChrk")
 
-# الشهادات
-if choice == texts[lang]["sections"][1]:
-    st.header("📜 الشهادات" if lang == "العربية" else "📜 Certificates")
+# 🏅 الشهادات
+elif selected == T["sections"][1]:
+    st.subheader(T["sections"][1])
     cert_dir = "certificates"
     if os.path.exists(cert_dir):
-        images = [img for img in os.listdir(cert_dir) if img.lower().endswith((".png", ".jpg", ".jpeg"))]
+        files = os.listdir(cert_dir)
+        image_files = [f for f in files if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
         cols = st.columns(2)
-        for i, img in enumerate(images):
+        for i, file in enumerate(image_files):
+            path = os.path.join(cert_dir, file)
             with cols[i % 2]:
-                st.image(os.path.join(cert_dir, img), caption=img, use_column_width=True)
-    else:
-        st.warning("📂 مجلد الشهادات غير موجود." if lang == "العربية" else "📂 Certificates folder not found.")
+                st.image(path, caption=file, use_column_width=True)
 
-# المشاريع
-if choice == texts[lang]["sections"][2]:
-    st.header("📁 المشاريع" if lang == "العربية" else "📁 Projects")
-    st.markdown("- ✅ [نظام الحوسبة التعليمية Open EMIS](https://example.com)")
+# 📁 المشاريع
+elif selected == T["sections"][2]:
+    st.subheader(T["sections"][2])
+    st.info("📦 قريبًا ستُضاف المشاريع هنا..." if lang == "ar" else "📦 Projects will be added soon...")
 
-# المهارات
-if choice == texts[lang]["sections"][3]:
-    st.header("📊 المهارات" if lang == "العربية" else "📊 Skills")
-    skills = {
-        "Python": 95,
-        "Pandas / NumPy": 90,
-        "Streamlit": 90,
-        "C++": 80,
-        "PHP / Laravel": 75,
-        "HTML / CSS / JS": 85,
-        "Git & GitHub": 80,
-    }
+# 📊 المهارات
+elif selected == T["sections"][3]:
+    st.subheader(T["sections"][3])
+    skills = {"Python": 90, "Streamlit": 85, "Pandas": 80, "Git": 70, "HTML/CSS": 75}
     for skill, level in skills.items():
-        st.progress(level / 100)
-        st.write(f"{skill}: {level}%")
+        st.markdown(f"**{skill}**")
+        st.progress(level)
 
-# تواصل
-if choice == texts[lang]["sections"][4]:
-    st.subheader(texts[lang]["send"])
-    with st.form("contact"):
-        name = st.text_input(texts[lang]["name"])
-        email = st.text_input(texts[lang]["email"])
-        msg = st.text_area(texts[lang]["message"])
-        if st.form_submit_button(texts[lang]["send"]):
-            if name and email and msg:
-                st.success("✅ تم الإرسال!" if lang == "العربية" else "✅ Message sent!")
+# 📨 تواصل معي
+elif selected == T["sections"][4]:
+    st.subheader(T["contact_title"])
+    with st.form(key="contact_form"):
+        name = st.text_input(T["name"])
+        email = st.text_input(T["email"])
+        message = st.text_area(T["message"])
+        if st.form_submit_button(T["send"]):
+            if name and email and message:
+                st.success("✅ تم الإرسال بنجاح!" if lang == "ar" else "✅ Sent successfully!")
             else:
-                st.warning("❗ يرجى تعبئة الحقول." if lang == "العربية" else "❗ Please fill out all fields.")
+                st.warning("يرجى تعبئة جميع الحقول." if lang == "ar" else "Please fill out all fields.")
 
-# حجز موعد
-if choice == texts[lang]["sections"][5]:
-    st.subheader(texts[lang]["booking"])
-    with st.form("booking"):
-        name = st.text_input(texts[lang]["name"])
-        email = st.text_input(texts[lang]["email"])
-        date = st.date_input(texts[lang]["date"])
-        time = st.time_input(texts[lang]["time"])
-        if st.form_submit_button(texts[lang]["book"]):
+# 📆 حجز موعد
+elif selected == T["sections"][5]:
+    st.subheader(T["booking"])
+    with st.form(key="appointment_form"):
+        name = st.text_input(T["name"])
+        email = st.text_input(T["email"])
+        date = st.date_input(T["date"])
+        time = st.time_input(T["time"])
+        submitted = st.form_submit_button(T["book"])
+        if submitted:
             if name and email:
-                st.success("📆 تم حجز الموعد بنجاح!" if lang == "العربية" else "📆 Appointment booked!")
+                st.success("✅ تم حجز الموعد بنجاح!" if lang == "ar" else "✅ Appointment booked successfully!")
             else:
-                st.warning("❗ يرجى تعبئة الحقول." if lang == "العربية" else "❗ Please complete all fields.")
+                st.warning("يرجى ملء جميع الحقول." if lang == "ar" else "Please complete all fields.")
 
-# تعليقات الزوار
-st.markdown("### 💬 " + texts[lang]["comments"])
-with st.form("comments"):
-    commenter = st.text_input(texts[lang]["name"])
-    comment = st.text_area(texts[lang]["message"])
-    if st.form_submit_button(texts[lang]["comment_button"]):
-        if commenter and comment:
+# 💬 تعليقات الزوار
+st.markdown("---")
+st.subheader(T["comment"])
+with st.form("comment_form"):
+    user_name = st.text_input(T["name"])
+    user_comment = st.text_area(T["message"])
+    if st.form_submit_button(T["send"]):
+        if user_name and user_comment:
             with open("comments.txt", "a", encoding="utf-8") as f:
-                f.write(f"{commenter}: {comment}\n")
-            st.success(texts[lang]["success_comment"])
+                f.write(f"{user_name}: {user_comment}\n")
+            st.success("شكراً لتعليقك!" if lang == "ar" else "Thanks for your comment!")
         else:
-            st.warning("❗" + (" يرجى تعبئة الحقول." if lang == "العربية" else " Please fill all fields."))
+            st.warning("يرجى إدخال الاسم والتعليق." if lang == "ar" else "Please enter name and comment.")
 
+# عرض آخر التعليقات
 if os.path.exists("comments.txt"):
-    st.markdown("#### 📝 آخر التعليقات:")
+    st.markdown(f"### {T['last_comments']}")
     with open("comments.txt", "r", encoding="utf-8") as f:
-        for line in f.readlines()[-5:][::-1]:
-            st.info(line.strip())
+        comments = f.readlines()[-10:]
+    for comment in comments[::-1]:
+        st.info(comment.strip())
