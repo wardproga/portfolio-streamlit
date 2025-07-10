@@ -1,144 +1,146 @@
 import streamlit as st
+import plotly.graph_objects as go
 
-# إعدادات الصفحة
-st.set_page_config(page_title="ملف أعمالي", page_icon="💼", layout="wide")
+st.set_page_config(page_title="ملف أعمال معاذ النمرات", page_icon="💼", layout="wide")
 
-# القائمة الجانبية
+# --- الوضع الليلي / النهاري ---
+mode = st.selectbox("اختر المظهر:", ["🌞 الوضع النهاري", "🌙 الوضع الليلي"])
+
+def set_custom_theme(mode):
+    if mode == "🌙 الوضع الليلي":
+        st.markdown("""
+            <style>
+            body, .stApp {
+                background-color: #0e1117;
+                color: #FFFFFF;
+            }
+            div, p, label, input, textarea {
+                color: #FFFFFF !important;
+            }
+            .stTextInput>div>div>input {
+                background-color: #1e1e1e;
+                color: white;
+            }
+            .stDownloadButton>button {
+                background-color: #333333;
+                color: white;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+            <style>
+            body, .stApp {
+                background-color: #FFFFFF;
+                color: #000000;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+
+set_custom_theme(mode)
+
+# --- الشريط الجانبي ---
 st.sidebar.title("🔍 التنقل بين الأقسام")
 section = st.sidebar.radio("اختر القسم:", [
     "من أنا؟", 
     "المهارات", 
     "السيرة الذاتية", 
     "معرض المشاريع", 
+    "تقييم المهارات", 
     "روابط مهمة", 
     "تواصل معي"
 ])
 
-# تحديد الوضع
-mode = st.selectbox("اختر المظهر:", ["🌞 الوضع النهاري", "🌙 الوضع الليلي"])
+# --- من أنا ---
+if section == "من أنا؟":
+    st.title("مرحباً بكم في ملف أعمالي 💼")
+    st.subheader("من أنا؟")
+    st.write("""
+    أنا مطور ومحلل بيانات مهتم بمجالات تعلم الآلة وتحليل البيانات.
+    أعمل في مجال التعليم منذ أكثر من 14 سنة، وخريج جامعة آل البيت بتخصص علم الحاسوب.
+    أسعى لاستخدام البرمجة لإيجاد حلول ذكية للمشكلات.
+    """)
 
-# تطبيق CSS ديناميكي
-def set_custom_theme(mode):
-    if mode == "🌙 الوضع الليلي":
-        dark_theme = """
-        <style>
-        body, .stApp {
-            background-color: #0e1117;
-            color: #FFFFFF;
-        }
-        div, p, label, input, textarea {
-            color: #FFFFFF !important;
-        }
-        .stTextInput>div>div>input {
-            background-color: #1e1e1e;
-            color: white;
-        }
-        .stDownloadButton>button {
-            background-color: #333333;
-            color: white;
-        }
-        </style>
-        """
-        st.markdown(dark_theme, unsafe_allow_html=True)
-    else:
-        light_theme = """
-        <style>
-        body, .stApp {
-            background-color: #FFFFFF;
-            color: #000000;
-        }
-        </style>
-        """
-        st.markdown(light_theme, unsafe_allow_html=True)
+# --- المهارات ---
+elif section == "المهارات":
+    st.header("🧠 المهارات")
+    skills = [
+        "🐍 Python",
+        "📊 تحليل البيانات (Pandas, NumPy)",
+        "🧱 Streamlit",
+        "🌐 Git & GitHub",
+        "🧠 C++",
+        "🕸 PHP / Laravel",
+        "🧠 JavaScript / HTML / CSS"
+    ]
+    st.write("\n".join(f"- {skill}" for skill in skills))
 
-set_custom_theme(mode)
-# -------- إعداد الصفحة --------
-st.set_page_config(page_title="ملف أعمال معاذ", layout="centered")
+# --- السيرة الذاتية ---
+elif section == "السيرة الذاتية":
+    st.header("📄 السيرة الذاتية")
+    with open("CV_Moad_Nimrat.pdf", "rb") as pdf_file:
+        st.download_button("📥 تحميل السيرة الذاتية (PDF)", pdf_file.read(), file_name="CV_Moad_Nimrat.pdf")
 
-# -------- من أنا --------
-st.title("مرحباً بكم في ملف أعمالي 💼")
-st.subheader("من أنا؟")
-st.write("""
-أنا مطور ومحلل بيانات مهتم بمجالات تعلم الآلة وتحليل البيانات.  
-أسعى لاستخدام البرمجة لإيجاد حلول ذكية للمشكلات.  
-أعمل في مجال التعليم منذ أكثر من 14 سنة، وخريج جامعة آل البيت بتخصص علم الحاسوب.
-""")
+    with open("CV_Moad_Nimrat.docx", "rb") as docx_file:
+        st.download_button("📄 تحميل السيرة الذاتية (Word)", docx_file.read(), file_name="CV_Moad_Nimrat.docx")
 
-# -------- المهارات --------
-st.header("🧠 المهارات")
-skills = [
-    "🐍 Python",
-    "📊 تحليل البيانات (Pandas, NumPy)",
-    "💻 Streamlit",
-    "🌐 Git & GitHub",
-    "🧠 C++",
-    "🕸 PHP / Laravel",
-    "🧠 JavaScript / HTML / CSS"
-]
-for skill in skills:
-    st.write(f"- {skill}")
-# -------- معرض المشاريع --------
-st.header("📂 معرض المشاريع")
+# --- معرض المشاريع ---
+elif section == "معرض المشاريع":
+    st.header("📂 معرض المشاريع")
+    projects = [
+        {"title": "Open EMIS", "description": "نظام حوسبة تعليمية.", "link": "https://example.com/open-emis"},
+        {"title": "ملف الأعمال باستخدام Streamlit", "description": "موقع تفاعلي يعرض السيرة الذاتية.", "link": "https://moadau.streamlit.app"},
+    ]
+    cols = st.columns(2)
+    for i, p in enumerate(projects):
+        with cols[i % 2]:
+            st.subheader(p["title"])
+            st.write(p["description"])
+            st.markdown(f"[🔗 زيارة المشروع]({p['link']})")
 
-projects = [
-    {
-        "title": "نظام الحوسبة التعليمية Open EMIS",
-        "description": "نظام إلكتروني لإدارة المعلومات التعليمية يهدف إلى تحسين جمع البيانات وتحليلها.",
-        "link": "https://example.com/open-emis"
-    },
-    {
-        "title": "ملف الأعمال باستخدام Streamlit",
-        "description": "موقع تفاعلي لعرض السيرة الذاتية والمهارات باستخدام Streamlit.",
-        "link": "https://moadau.streamlit.app"
-    },
-    # يمكنك إضافة المزيد هنا...
-]
+# --- تقييم المهارات ---
+elif section == "تقييم المهارات":
+    st.header("📈 تقييم المهارات")
+    ratings = {
+        "Python": 9,
+        "Pandas / NumPy": 8,
+        "Streamlit": 9,
+        "Git / GitHub": 8,
+        "C++": 6,
+        "PHP / Laravel": 7,
+        "JavaScript / HTML / CSS": 7,
+    }
+    fig = go.Figure(data=[go.Bar(x=list(ratings.keys()), y=list(ratings.values()), marker_color='indigo')])
+    fig.update_layout(title="تقييمي الشخصي لمهاراتي", xaxis_title="المهارة", yaxis_title="التقييم (من 10)")
+    st.plotly_chart(fig)
 
-cols = st.columns(2)
-for i, project in enumerate(projects):
-    with cols[i % 2]:
-        st.subheader(project["title"])
-        st.write(project["description"])
-        st.markdown(f"[🔗 زيارة المشروع]({project['link']})")
-# -------- السيرة الذاتية --------
-st.header("📄 السيرة الذاتية")
+# --- روابط مهمة ---
+elif section == "روابط مهمة":
+    st.header("🌍 روابط مهمة")
+    st.markdown("[🔗 GitHub](https://github.com/wardproga)")
 
-# تحميل PDF
-with open("CV_Moad_Nimrat.pdf", "rb") as pdf_file:
-    pdf_bytes = pdf_file.read()
-st.download_button(
-    label="📄 تحميل السيرة الذاتية (PDF)",
-    data=pdf_bytes,
-    file_name="CV_Moad_Nimrat.pdf",
-    mime="application/pdf"
-)
+# --- تواصل معي ---
+elif section == "تواصل معي":
+    st.header("📫 تواصل معي")
+    st.markdown("""
+    <form action="https://formsubmit.co/wardproga@gmail.com" method="POST">
+        <input type="text" name="name" placeholder="الاسم" required><br>
+        <input type="email" name="email" placeholder="البريد" required><br>
+        <textarea name="message" placeholder="اكتب رسالتك هنا..." required></textarea><br>
+        <button type="submit">إرسال</button>
+    </form>
+    """, unsafe_allow_html=True)
 
-# تحميل Word
-with open("CV_Moad_Nimrat.docx", "rb") as docx_file:
-    docx_bytes = docx_file.read()
-st.download_button(
-    label="📄 تحميل السيرة الذاتية (Word)",
-    data=docx_bytes,
-    file_name="CV_Moad_Nimrat.docx",
-    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-)
-
-# -------- روابط مهمة --------
-st.header("🌍 روابط مهمة")
-st.markdown("[🔗 زيارة حسابي على GitHub](https://github.com/wardproga)")
-
-# -------- نموذج تواصل --------
-st.header("📬 تواصل معي")
-contact_form = """
-<form action="https://formsubmit.co/wardproga@gmail.com" method="POST">
-    <input type="text" name="name" placeholder="اسمك الكامل" required><br><br>
-    <input type="email" name="email" placeholder="بريدك الإلكتروني" required><br><br>
-    <textarea name="message" placeholder="اكتب رسالتك هنا..." rows="5" required></textarea><br><br>
-    <button type="submit">إرسال</button>
-</form>
-"""
-st.markdown(contact_form, unsafe_allow_html=True)
-
-# -------- تذييل --------
-st.markdown("---")
-st.write("© 2025 جميع الحقوق محفوظة | تم بناء هذا الموقع باستخدام Streamlit")
+# --- CSS إضافي ---
+st.markdown("""
+    <style>
+    textarea, input, button {
+        direction: rtl;
+        font-family: 'Cairo', sans-serif;
+        font-size: 16px;
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    </style>
+""", unsafe_allow_html=True)
